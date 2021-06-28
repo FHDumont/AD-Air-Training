@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5p %8t [%40.40c{4}]: %m%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.springframework.amqp.rabbit.listener.BlockingQueueConsumer" level="INFO"/>
+  <logger name="org.apache.kafka" level="INFO"/>
+  <logger name="org.springframework.amqp.rabbit" level="DEBUG"/>
+  <root level="INFO">
+    <appender-ref ref="stdout"/>
+  </root>
+</configuration>
