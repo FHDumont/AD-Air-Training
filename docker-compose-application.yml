@@ -1,26 +1,6 @@
 version: '3.5'
 
 services:
-
-  load:
-    container_name: load
-    restart: always
-    image: fernandodumont/load
-    environment:
-      - ENABLE_BASE_LOAD=1
-    logging: &logging
-      driver: json-file
-      options:
-        max-size: '1m'
-        max-file: '5'
-
-  ticketing-load:
-    container_name: ticketing-load
-    restart: always
-    image: fernandodumont/load
-    environment:
-      - ENABLE_TICKETING_LOAD=1
-
   machine-agent:
     container_name: machine-agent
     hostname: machine-agent
@@ -88,6 +68,8 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=customer-services
       - APPDYNAMICS_AGENT_NODE_NAME=customer-services-1
+      - MONGO_HOST=10.20.2.100
+      - MONGO_PORT=27017
 
   approval-services:
     container_name: approval-services
@@ -103,6 +85,8 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=approval-services
       - APPDYNAMICS_AGENT_NODE_NAME=approval-services-1
+      - SAP_SERVICES=10.20.3.100
+      - SAP_SERVICES_PORT=8080
 
   ticket-services:
     container_name: ticket-services
@@ -121,6 +105,10 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=ticket-services
       - APPDYNAMICS_AGENT_NODE_NAME=ticket-services-1
+      - MONGO_HOST=10.20.2.100
+      - MONGO_PORT=27017
+      - FRAUD_SERVICES=10.20.3.100
+      - FRAUD_SERVICES_PORT=8080
 
   booking-services:
     container_name: booking-services
@@ -173,6 +161,7 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=offer-services
       - APPDYNAMICS_AGENT_NODE_NAME=offer-services-1
       - APP_ENTRY_POINT=/src/index.js
+      - MYSQL_HOST=10.20.2.100
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
       - ./shim.js:/src/shim.js
@@ -200,8 +189,6 @@ services:
     hostname: auth-services
     restart: always
     image: fernandodumont/nodejs-services
-    depends_on:
-      - mysql-promotions
     expose:
       - 8080
     env_file: controller.env
@@ -209,6 +196,8 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=auth-services
       - APPDYNAMICS_AGENT_NODE_NAME=auth-services-1
       - APP_ENTRY_POINT=/src/index.js
+      - MONGO_HOST=10.20.2.100
+      - MONGO_PORT=27018
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
       - ./shim.js:/src/shim.js
@@ -243,35 +232,6 @@ services:
 ########################################################
 ### Kafka, databases, and other backends
 ########################################################
-
-  mysql-promotions:
-    image: fernandodumont/mysql-db
-    container_name: mysql-promotions
-    hostname: mysql-promotions
-    restart: always
-    expose:
-      - 3306
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=l3tm31n
-
-  fraud-check:
-    container_name: fraud-check
-    hostname: fraud-check
-    restart: always
-    image: fernandodumont/mock-services
-    expose:
-      - 8080
-
-  sap-services:
-    container_name: sap-services
-    hostname: sap-services
-    restart: always
-    image: fernandodumont/mock-services
-    expose:
-      - 8080
-
   zookeeper:
     container_name: zookeeper
     restart: always
@@ -294,26 +254,6 @@ services:
       - KAFKA_PORT=9092
     depends_on:
       - zookeeper
-
-  mongo-sessions:
-    image: mongo:latest
-    container_name: mongo-sessions
-    hostname: mongo-sessions
-    restart: always
-    expose:
-      - "27017"
-    ports:
-      - "27018:27017"
-
-  mongo-tickets:
-    image: mongo:latest
-    container_name: mongo-tickets
-    hostname: mongo-tickets
-    restart: always
-    expose:
-      - "27017"
-    ports:
-      - "27017:27017"
 
   java-agent:
     container_name: java-agent

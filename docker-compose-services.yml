@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+
+  machine-agent:
+    container_name: machine-agent
+    hostname: machine-agent
+    image: appdynamics/machine-agent-analytics:latest
+    env_file: controller.env
+    environment:
+      - APPDYNAMICS_SIM_ENABLED=true
+      - APPDYNAMICS_DOCKER_ENABLED=true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostroot:ro
+    expose:
+      - 9090
+      
+  fraud-check:
+    container_name: fraud-check
+    hostname: fraud-check
+    restart: always
+    image: fernandodumont/mock-services
+    expose:
+      - 8080
+
+  sap-services:
+    container_name: sap-services
+    hostname: sap-services
+    restart: always
+    image: fernandodumont/mock-services
+    expose:
+      - 8080

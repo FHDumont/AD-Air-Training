@@ -1,0 +1,45 @@
+version: '3.5'
+
+services:
+
+  machine-agent:
+    container_name: machine-agent
+    hostname: machine-agent
+    image: appdynamics/machine-agent-analytics:latest
+    env_file: controller.env
+    environment:
+      - APPDYNAMICS_SIM_ENABLED=true
+      - APPDYNAMICS_DOCKER_ENABLED=true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostroot:ro
+    expose:
+      - 9090
+      
+  load:
+    container_name: load
+    restart: always
+    image: fernandodumont/load
+    environment:
+      - ENABLE_BASE_LOAD=1
+      - MONGO_HOST=10.20.2.100
+      - MONGO_PORT=27017
+      - WEB_API_HOST=10.20.1.100
+      - WEB_API_PORT=8080
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: '1m'
+        max-file: '5'
+
+  ticketing-load:
+    container_name: ticketing-load
+    restart: always
+    image: fernandodumont/load
+    environment:
+      - ENABLE_TICKETING_LOAD=1
+      - MONGO_HOST=10.20.2.100
+      - MONGO_PORT=27017
+      - WEB_API_HOST=10.20.1.100
+      - WEB_API_PORT=8080

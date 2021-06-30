@@ -1,0 +1,50 @@
+version: '3.5'
+
+services:
+
+  machine-agent:
+    container_name: machine-agent
+    hostname: machine-agent
+    image: appdynamics/machine-agent-analytics:latest
+    env_file: controller.env
+    environment:
+      - APPDYNAMICS_SIM_ENABLED=true
+      - APPDYNAMICS_DOCKER_ENABLED=true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostroot:ro
+    expose:
+      - 9090
+      
+  mysql-promotions:
+    image: fernandodumont/mysql-db
+    container_name: mysql-promotions
+    hostname: mysql-promotions
+    restart: always
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=l3tm31n
+
+  mongo-sessions:
+    image: mongo:latest
+    container_name: mongo-sessions
+    hostname: mongo-sessions
+    restart: always
+    expose:
+      - "27017"
+    ports:
+      - "27018:27017"
+
+  mongo-tickets:
+    image: mongo:latest
+    container_name: mongo-tickets
+    hostname: mongo-tickets
+    restart: always
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
