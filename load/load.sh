@@ -1,7 +1,10 @@
 #!/bin/bash
 
-WEB_API_HOST=web-api
+WEB_API_HOST=10.20.3.100
 WEB_API_PORT=8080
+
+echo "WEB_API_HOST: $WEB_API_HOST"
+echo "WEB_API_PORT: $WEB_API_PORT"
 
 if [ x"$WEB_API_HOST" != "x" ]; then
     WEB_API_HOST=$WEB_API_HOST

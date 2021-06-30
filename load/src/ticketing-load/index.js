@@ -10,7 +10,6 @@ var dbName = "tickets";
 var initalWaitMS = 5000;
 var waitMS = 2000;
 
-
 var mongoDBURL = "mongodb://mongo-tickets:27017/tickets";
 var mongoHost = "mongo-tickets"
 var mongoPort = "27017"
@@ -22,14 +21,23 @@ if ( process.env.MONGO_PORT != undefined && process.env.MONGO_PORT != "" ) {
     mongoPort = process.env.MONGO_PORT
 }
 
+if ( process.env.WEB_API_HOST != undefined && process.env.WEB_API_HOST != "" ) {
+    hostName = process.env.WEB_API_HOST
+}
+
+if ( process.env.WEB_API_PORT != undefined && process.env.WEB_API_PORT != "" ) {
+    hostPort = process.env.WEB_API_PORT
+}
+
 mongoDBURL = "mongodb://" + mongoHost + ":" + mongoPort + "/tickets";
+
 
 var reserveFlight = function() {
 
     console.log("Starting reserveFlight");
     var ticketInfo = infoGen.getTicketInfo();
 
-    var options = {host: hostName, path: '/web-api/flights/reserveFlight', port: '8080', method: 'POST', headers: {'sessionId': ticketInfo.sessionId, 'Content-Type': 'application/json','Content-Length': Buffer.byteLength(JSON.stringify(ticketInfo))}};
+    var options = {host: hostName, path: '/web-api/flights/reserveFlight', port: hostPort, method: 'POST', headers: {'sessionId': ticketInfo.sessionId, 'Content-Type': 'application/json','Content-Length': Buffer.byteLength(JSON.stringify(ticketInfo))}};
     var newReq = http.request(options, function(res) {
         console.log("statusCode: ", res.statusCode);
         res.on('data', function(d) {
@@ -59,7 +67,7 @@ var managerApproval = function() {
             var updateFields = {"managerApprovalDate": new Date(Date.now()), "nextStepAfter": new Date(nextStepAfter)};
             setMilestoneDate("managerApprovalDate", updateFields, ticketId, nextStepDelay);
 
-            var url = hostName + ':8080/web-api/flights/managerApproval';
+            var url = hostName + ':' + hostPort + '/web-api/flights/managerApproval';
             var options = {
                 method: 'POST',
                 json: true,
@@ -92,7 +100,7 @@ var paymentIssued = function() {
             var updateFields = {"paymentIssuedDate": new Date(Date.now()), "nextStepAfter": new Date(nextStepAfter)};
             setMilestoneDate("paymentIssuedDate", updateFields, ticketId, nextStepDelay);
 
-            var url = hostName + ':8080/web-api/flights/paymentIssued';
+            var url = hostName + ':' + hostPort + '/web-api/flights/paymentIssued';
             var options = {
                 method: 'POST',
                 json: true,
@@ -122,7 +130,7 @@ var ticketIssued = function() {
             var updateFields = {"ticketIssuedDate": new Date(Date.now()), "nextStepAfter": new Date(nextStepAfter)};
             setMilestoneDate("ticketIssuedDate", updateFields, ticketId, nextStepDelay);
 
-            var url = hostName + ':8080/web-api/flights/ticketIssued';
+            var url = hostName + ':' + hostPort + '/web-api/flights/ticketIssued';
             var options = {
                 method: 'POST',
                 json: true,

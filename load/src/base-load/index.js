@@ -3,8 +3,21 @@ var lodash = require("lodash");
 var needle = require('needle');
 var eumUtilities = require("eum-utilities");
 
-var appBaseUrl = "http://web-api:8080";
+var appBaseUrl = "";
+var webApiHost = "web-api";
+var webApiPort = "8080";
+
 var appInitialized = false;
+
+if ( process.env.WEB_API_HOST != undefined && process.env.WEB_API_HOST != "" ) {
+    webApiHost = process.env.WEB_API_HOST
+}
+
+if ( process.env.WEB_API_PORT != undefined && process.env.WEB_API_PORT != "" ) {
+    webApiPort = process.env.WEB_API_PORT
+}
+
+appBaseUrl = "http://" + webApiHost + ":" + webApiPort;
 
 var getPagesForSession = function(sessionGuid) {
 
