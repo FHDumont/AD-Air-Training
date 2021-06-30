@@ -16,7 +16,26 @@ services:
       - /:/hostroot:ro
     expose:
       - 9090
-      
+
+  netviz-agent:
+    container_name: netviz-agent
+    hostname: netviz-agent
+    image: fernandodumont/machine-agent-netviz:21.3.0
+    network_mode: "host"
+    env_file: controller.env
+    environment:
+      - APPDYNAMICS_SIM_ENABLED=true
+      - APPDYNAMICS_DOCKER_ENABLED=true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostroot:ro
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    expose:
+      - 3892
+
   load:
     container_name: load
     restart: always
