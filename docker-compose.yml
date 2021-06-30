@@ -5,9 +5,11 @@ services:
   load:
     container_name: load
     restart: always
-    image: load
+    image: fernandodumont/load
     environment:
       - ENABLE_BASE_LOAD=1
+      - MONGO_HOST=192.168.1.19
+      - MONGO_PORT=27017
     logging: &logging
       driver: json-file
       options:
@@ -17,9 +19,11 @@ services:
   ticketing-load:
     container_name: ticketing-load
     restart: always
-    image: load
+    image: fernandodumont/load
     environment:
       - ENABLE_TICKETING_LOAD=1
+      - MONGO_HOST=192.168.1.19
+      - MONGO_PORT=27017
 
   machine-agent:
     container_name: machine-agent
@@ -44,7 +48,7 @@ services:
     container_name: web-api
     hostname: web-api
     restart: always
-    image: web-api
+    image: fernandodumont/web-api
     expose:
       - 8080
     ports:
@@ -61,7 +65,7 @@ services:
     container_name: api-services
     hostname: api-services
     restart: always
-    image: java-services
+    image: fernandodumont/java-services
     expose:
       - 8080
     volumes:
@@ -76,7 +80,7 @@ services:
     container_name: customer-services
     hostname: customer-services
     restart: always
-    image: java-services
+    image: fernandodumont/java-services
     expose:
       - 8080
     depends_on:
@@ -88,12 +92,14 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=customer-services
       - APPDYNAMICS_AGENT_NODE_NAME=customer-services-1
+      - MONGO_HOST=192.168.1.19
+      - MONGO_PORT=27017
 
   approval-services:
     container_name: approval-services
     hostname: approval-services
     restart: always
-    image: java-services
+    image: fernandodumont/java-services
     expose:
       - 8080
     volumes:
@@ -103,12 +109,14 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=approval-services
       - APPDYNAMICS_AGENT_NODE_NAME=approval-services-1
+      - SAP_SERVICES=192.168.1.19
+      - SAP_SERVICES_PORT=8080
 
   ticket-services:
     container_name: ticket-services
     hostname: ticket-services
     restart: always
-    image: java-services
+    image: fernandodumont/java-services
     depends_on:
       - kafka
     volumes:
@@ -121,12 +129,16 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=ticket-services
       - APPDYNAMICS_AGENT_NODE_NAME=ticket-services-1
+      - MONGO_HOST=192.168.1.19
+      - MONGO_PORT=27017
+      - FRAUD_SERVICES=192.168.1.19
+      - FRAUD_SERVICES_PORT=8080
 
   booking-services:
     container_name: booking-services
     hostname: booking-services
     restart: always
-    image: java-services
+    image: fernandodumont/java-services
     depends_on:
       - kafka
     volumes:
@@ -148,7 +160,7 @@ services:
     container_name: flight-services
     hostname: flight-services
     restart: always
-    image: nodejs-services
+    image: fernandodumont/nodejs-services
     expose:
       - 8080
     env_file: controller.env
@@ -165,7 +177,7 @@ services:
     container_name: offer-services
     hostname: offer-services
     restart: always
-    image: nodejs-services
+    image: fernandodumont/nodejs-services
     expose:
       - 8080
     env_file: controller.env
@@ -173,6 +185,7 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=offer-services
       - APPDYNAMICS_AGENT_NODE_NAME=offer-services-1
       - APP_ENTRY_POINT=/src/index.js
+      - MYSQL_HOST=192.168.1.19
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
       - ./shim.js:/src/shim.js
@@ -182,7 +195,7 @@ services:
     container_name: search-services
     hostname: search-services
     restart: always
-    image: nodejs-services
+    image: fernandodumont/nodejs-services
     expose:
       - 8080
     env_file: controller.env
@@ -199,7 +212,7 @@ services:
     container_name: auth-services
     hostname: auth-services
     restart: always
-    image: nodejs-services
+    image: fernandodumont/nodejs-services
     depends_on:
       - mysql-promotions
     expose:
@@ -209,6 +222,8 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=auth-services
       - APPDYNAMICS_AGENT_NODE_NAME=auth-services-1
       - APP_ENTRY_POINT=/src/index.js
+      - MONGO_HOST=192.168.1.19
+      - MONGO_PORT=27018
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
       - ./shim.js:/src/shim.js
@@ -222,7 +237,7 @@ services:
     container_name: search-api
     hostname: search-api
     restart: always
-    image: go-services
+    image: fernandodumont/go-services
     env_file: controller.env
     environment:
       - TIER_NAME=search-api
@@ -233,7 +248,7 @@ services:
     container_name: caching-services
     hostname: caching-services
     restart: always
-    image: go-services
+    image: fernandodumont/go-services
     env_file: controller.env
     environment:
       - TIER_NAME=caching-services
@@ -245,7 +260,7 @@ services:
 ########################################################
 
   mysql-promotions:
-    image: mysql-db
+    image: fernandodumont/mysql-db
     container_name: mysql-promotions
     hostname: mysql-promotions
     restart: always
@@ -260,7 +275,7 @@ services:
     container_name: fraud-check
     hostname: fraud-check
     restart: always
-    image: mock-services
+    image: fernandodumont/mock-services
     expose:
       - 8080
 
@@ -268,7 +283,7 @@ services:
     container_name: sap-services
     hostname: sap-services
     restart: always
-    image: mock-services
+    image: fernandodumont/mock-services
     expose:
       - 8080
 

@@ -5,11 +5,24 @@ var needle = require("needle");
 
 var hostName = "web-api";
 var hostPort = "8080";
-var mongoDBURL = "mongodb://mongo-tickets:27017/tickets";
 var MongoClient = require('mongodb').MongoClient;
 var dbName = "tickets";
 var initalWaitMS = 5000;
 var waitMS = 2000;
+
+
+var mongoDBURL = "mongodb://mongo-tickets:27017/tickets";
+var mongoHost = "mongo-tickets"
+var mongoPort = "27017"
+
+if ( process.env.MONGO_HOST != undefined && process.env.MONGO_HOST != "" ) {
+    mongoHost = process.env.MONGO_HOST
+}
+if ( process.env.MONGO_PORT != undefined && process.env.MONGO_PORT != "" ) {
+    mongoPort = process.env.MONGO_PORT
+}
+
+mongoDBURL = "mongodb://" + mongoHost + ":" + mongoPort + "/tickets";
 
 var reserveFlight = function() {
 

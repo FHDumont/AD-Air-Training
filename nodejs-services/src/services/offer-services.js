@@ -52,9 +52,18 @@ var mysql = require('mysql');
 var connection;
 
 function startConnection() {
-    console.error('CONNECTING');
+    
+    var mysqlHost = "mysql-promotions"
+    
+    console.log("process.env.MYSQL_HOST: " + process.env.MYSQL_HOST)
+    if ( process.env.MYSQL_HOST != undefined && process.env.MYSQL_HOST != "" ) {
+        mysqlHost = process.env.MYSQL_HOST
+    }
+
+    console.error('CONNECTING: ' + mysqlHost);
+
     connection = mysql.createConnection({
-      host     : 'mysql-promotions',
+      host     : mysqlHost,
       user     : 'promotions',
       password : 'promotions',
       database : 'Promotions'

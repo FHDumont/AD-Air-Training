@@ -19,9 +19,26 @@ import org.apache.log4j.Logger;
 @RequestMapping("/ticket-services")
 public class TicketServicesController extends BaseController {
 
-    private String MONGO_URL = "mongodb://mongo-tickets:27017";
+    private String MONGO_URL = createMongoDBURL();
     private String DATABASE_NAME = "tickets";
+
+    private String fraudServices = getEnvVariable("FRAUD_SERVICES", "fraud-check");
+    private String fraudServicesPort = getEnvVariable("FRAUD_SERVICES_PORT", "8080");
+
     Logger logger = Logger.getLogger(TicketServicesController.class);
+
+    private String createMongoDBURL(){
+        return "mongodb://" + getEnvVariable("MONGO_HOST","mongo-tickets") + ":" + getEnvVariable("MONGO_PORT", "27017");
+    }
+
+    private String getEnvVariable(String _env, String _default){
+        String value = System.getenv(_env);
+        if ( value == null || value == ""){
+            return _default;
+        } else {
+            return value;
+        }
+    }
 
     @RequestMapping(value = { "", "/" })
     public String home() {
@@ -117,7 +134,7 @@ public class TicketServicesController extends BaseController {
             filter.append("nextStepAfter", new Document("$lt", new Date()));
             getRandomDocument(filter);
 
-            WebConnect.makeWebRequest("fraud-check", "8080", "fraudCheck");
+            WebConnect.makeWebRequest(fraudServices, fraudServicesPort, "fraudCheck");
         } catch (Throwable e) {
             System.err.println(e);
         }

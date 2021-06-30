@@ -14,8 +14,24 @@ import java.util.Random;
 
 public class TicketServicesKafkaListener extends AcmeKafkaConsumer {
 
-    private String MONGO_URL = "mongodb://mongo-tickets:27017";
+    private String MONGO_URL = createMongoDBURL();
     private String DATABASE_NAME = "tickets";
+
+    private String fraudServices = getEnvVariable("FRAUD_SERVICES", "fraud-check");
+    private String fraudServicesPort = getEnvVariable("FRAUD_SERVICES_PORT", "8080");
+
+    private String createMongoDBURL(){
+        return "mongodb://" + getEnvVariable("MONGO_HOST","mongo-tickets") + ":" + getEnvVariable("MONGO_PORT", "27017");
+    }
+
+    private String getEnvVariable(String _env, String _default){
+        String value = System.getenv(_env);
+        if ( value == null || value == ""){
+            return _default;
+        } else {
+            return value;
+        }
+    }
 
     public void handleMessage(String message) {
 
@@ -50,7 +66,7 @@ public class TicketServicesKafkaListener extends AcmeKafkaConsumer {
                     filter.append("nextStepAfter", new Document("$lt", new Date()));
                     getRandomDocument(filter);
 
-                    WebConnect.makeWebRequest("fraud-check", "8080", "fraudCheck");
+                    WebConnect.makeWebRequest(fraudServices, fraudServicesPort, "fraudCheck");
                 } catch (Throwable e) {
                     System.err.println(e);
                 }

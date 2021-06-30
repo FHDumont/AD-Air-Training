@@ -30,6 +30,17 @@ dispatcher.onGet("/auth-services/authenticate", function (request, response) {
     var delayMaxMS = 100;
 
     var mongoDBURL = "mongodb://mongo-sessions/sessions";
+    var mongoHost = "mongo-sessions"
+    var mongoPort = "27018"
+    
+    if ( process.env.MONGO_HOST != undefined && process.env.MONGO_HOST != "" ) {
+        mongoHost = process.env.MONGO_HOST
+    }
+    if ( process.env.MONGO_PORT != undefined && process.env.MONGO_PORT != "" ) {
+        mongoPort = process.env.MONGO_PORT
+    }
+
+    mongoDBURL = "mongodb://" + mongoHost + ":" + mongoPort + "/sessions";
 
     var url = request.url;
 
@@ -97,7 +108,7 @@ var db;
 
 var initMongoDB = function (mongoDBURL) {
 
-    console.log("initMongoDB");
+    console.log("initMongoDB: " + mongoDBURL);
     MongoClient.connect(mongoDBURL, function (err, database) {
         if (err) throw err;
         db = database;
