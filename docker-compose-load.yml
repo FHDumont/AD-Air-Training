@@ -23,9 +23,9 @@ services:
     image: fernandodumont/load
     environment:
       - ENABLE_BASE_LOAD=1
-      - MONGO_HOST=10.20.2.100
+      - MONGO_HOST=10.20.4.100
       - MONGO_PORT=27017
-      - WEB_API_HOST=10.20.1.100
+      - WEB_API_HOST=10.20.3.100
       - WEB_API_PORT=8080
     logging: &logging
       driver: json-file
@@ -39,7 +39,7 @@ services:
     image: fernandodumont/load
     environment:
       - ENABLE_TICKETING_LOAD=1
-      - MONGO_HOST=10.20.2.100
+      - MONGO_HOST=10.20.4.100
       - MONGO_PORT=27017
-      - WEB_API_HOST=10.20.1.100
+      - WEB_API_HOST=10.20.3.100
       - WEB_API_PORT=8080

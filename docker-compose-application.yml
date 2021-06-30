@@ -68,7 +68,7 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=customer-services
       - APPDYNAMICS_AGENT_NODE_NAME=customer-services-1
-      - MONGO_HOST=10.20.2.100
+      - MONGO_HOST=10.20.4.100
       - MONGO_PORT=27017
 
   approval-services:
@@ -85,7 +85,7 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=approval-services
       - APPDYNAMICS_AGENT_NODE_NAME=approval-services-1
-      - SAP_SERVICES=10.20.3.100
+      - SAP_SERVICES=10.20.2.100
       - SAP_SERVICES_PORT=8080
 
   ticket-services:
@@ -105,9 +105,9 @@ services:
       - JAVA_TOOL_OPTIONS=-javaagent:/opt/appdynamics/java-agent/javaagent.jar
       - APPDYNAMICS_AGENT_TIER_NAME=ticket-services
       - APPDYNAMICS_AGENT_NODE_NAME=ticket-services-1
-      - MONGO_HOST=10.20.2.100
+      - MONGO_HOST=10.20.4.100
       - MONGO_PORT=27017
-      - FRAUD_SERVICES=10.20.3.100
+      - FRAUD_SERVICES=10.20.2.100
       - FRAUD_SERVICES_PORT=8080
 
   booking-services:
@@ -161,7 +161,7 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=offer-services
       - APPDYNAMICS_AGENT_NODE_NAME=offer-services-1
       - APP_ENTRY_POINT=/src/index.js
-      - MYSQL_HOST=10.20.2.100
+      - MYSQL_HOST=10.20.4.100
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
       - ./shim.js:/src/shim.js
@@ -196,7 +196,7 @@ services:
       - APPDYNAMICS_AGENT_TIER_NAME=auth-services
       - APPDYNAMICS_AGENT_NODE_NAME=auth-services-1
       - APP_ENTRY_POINT=/src/index.js
-      - MONGO_HOST=10.20.2.100
+      - MONGO_HOST=10.20.4.100
       - MONGO_PORT=27018
     command: ["/bin/sh", "-c", "/src/nodeStart.sh"]
     volumes:
